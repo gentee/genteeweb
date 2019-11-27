@@ -8,5 +8,8 @@ const (
 	Version        = "1.0.0"
 	DefaultCfgName = "genteeweb.yaml"
 	DefaultMode    = `live`
+	DefaultLang    = `en`
 	DefaultPort    = 1322
+	MDHead         = `---`
+	ContentFile    = `content.yaml`
 )

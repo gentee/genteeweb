@@ -21,13 +21,15 @@ const (
 )
 
 type Config struct {
-	Root   string `yaml:"root"`   // Root directory. If it is empty - dir of yaml file
-	Domain string `yaml:"domain"` // domain
-	Port   int    `yaml:"port"`   // if empty, then 8080
-	LogDir string `yaml:"logdir"` // directory for log files, log if it is empty
-	WebDir string `yaml:"webdir"` // directory for static web files, www if it is empty
-	Mode   string `yaml:"mode"`   // mode: static, cache, live. Default, live
-	mode   int
+	Root    string `yaml:"root"`    // Root directory. If it is empty - dir of yaml file
+	Domain  string `yaml:"domain"`  // domain
+	Port    int    `yaml:"port"`    // if empty, then 8080
+	Content string `yaml:"content"` // content directory. content if it is empty
+	LogDir  string `yaml:"logdir"`  // directory for log files, log if it is empty
+	WebDir  string `yaml:"webdir"`  // directory for static web files, www if it is empty
+	Mode    string `yaml:"mode"`    // mode: static, cache, live. Default, live
+	Lang    string `yaml:"lang"`    // default language. By default, en
+	mode    int
 }
 
 var (
@@ -65,6 +67,18 @@ func LoadSettings() {
 	}
 	if len(cfg.Mode) == 0 {
 		cfg.Mode = DefaultMode
+	}
+	if len(cfg.Content) == 0 {
+		cfg.Content = filepath.Join(cfg.Root, `content`)
+	}
+	if len(cfg.LogDir) == 0 {
+		cfg.LogDir = filepath.Join(cfg.Root, `log`)
+	}
+	if len(cfg.WebDir) == 0 {
+		cfg.WebDir = filepath.Join(cfg.Root, `www`)
+	}
+	if len(cfg.Lang) == 0 {
+		cfg.Lang = DefaultLang
 	}
 	if cfg.mode, ok = map[string]int{
 		`live`:   ModeLive,
