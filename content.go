@@ -30,12 +30,13 @@ type Page struct {
 type Content struct {
 	Template string `yaml:"template"`
 
+	dir      string
 	parent   *Content
 	children []*Content
 }
 
 var (
-	pages    = map[string]Page{}
+	pages    = map[string]*Page{}
 	contents *Content
 )
 
@@ -51,7 +52,7 @@ func readFile(www, name string, owner *Content) {
 		}
 		return
 	}
-	page := Page{
+	page := &Page{
 		parent: owner,
 	}
 	body := strings.TrimSpace(string(data))
@@ -66,7 +67,7 @@ func readFile(www, name string, owner *Content) {
 		}
 	}
 	fname = fname[:len(fname)-len(filepath.Ext(fname))]
-	page.url = path.Join(www, fname+`.html`)
+	page.url = strings.ToLower(path.Join(www, fname+`.html`))
 	page.body = body
 	pages[page.url] = page
 	fmt.Println(name, page)
@@ -91,6 +92,7 @@ func readDir(path, www string, owner *Content) {
 	}
 	for _, dir := range dirs {
 		child := &Content{
+			dir:    strings.ToLower(dir),
 			parent: owner,
 		}
 		readDir(filepath.Join(path, dir), www+`/`+dir, child)

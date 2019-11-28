@@ -15,9 +15,10 @@ import (
 )
 
 const (
-	ModeLive   = iota // compare the time of .md and .html
-	ModeCache         // returns .html if it exists
-	ModeStatic        // creates all .hmtl at the start
+	ModeLive    = iota // compare the time of .md and .html
+	ModeCache          // returns .html if it exists
+	ModeStatic         // creates all .hmtl at the start
+	ModeDynamic        // no cache
 )
 
 type Config struct {
@@ -81,9 +82,10 @@ func LoadSettings() {
 		cfg.Lang = DefaultLang
 	}
 	if cfg.mode, ok = map[string]int{
-		`live`:   ModeLive,
-		`cache`:  ModeCache,
-		`static`: ModeStatic,
+		`live`:    ModeLive,
+		`cache`:   ModeCache,
+		`static`:  ModeStatic,
+		`dynamic`: ModeDynamic,
 	}[cfg.Mode]; !ok {
 		golog.Fatalf(`Unknown mode %s`, cfg.Mode)
 	}

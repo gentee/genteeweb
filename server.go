@@ -98,11 +98,34 @@ func Logger(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func ping(c echo.Context) error {
-	return c.Render(http.StatusOK, `overview.html`, struct {
-		Content string
-	}{
-		Content: "Hello, world!",
-	})
+	req := c.Request()
+	data, err := RenderPage(req.URL.String())
+	if err != nil {
+		if err == ErrNotFound {
+			err = echo.NewHTTPError(http.StatusNotFound)
+		}
+		return err
+	}
+	return c.HTML(http.StatusOK, data)
+}
+
+func customHTTPErrorHandler(err error, c echo.Context) {
+	code := http.StatusInternalServerError
+	if he, ok := err.(*echo.HTTPError); ok {
+		code = he.Code
+	}
+	url := fmt.Sprintf("/%d.html", code)
+	message := http.StatusText(code)
+	if _, ok := pages[url]; ok {
+		if data, err := RenderPage(url); err == nil {
+			message = data
+		}
+	}
+	c.HTML(code, message)
+	/*	if err := c.File(errorPage); err != nil {
+			c.Logger().Error(err)
+		}
+		c.Logger().Error(err)*/
 }
 
 func RunServer() {
@@ -111,11 +134,10 @@ func RunServer() {
 	e.HideBanner = true
 	e.Use(Logger)
 	e.Use(md.Recover())
-	e.Renderer = LoadTemplates()
 
-	e.GET("/", ping)
-	//	e.GET("/list", list)
-	//	e.GET("/run", run)
+	e.HTTPErrorHandler = customHTTPErrorHandler
+
+	e.GET("/*", ping)
 
 	if err := e.Start(fmt.Sprintf(":%d", cfg.Port)); err != nil {
 		golog.Fatal(err)

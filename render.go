@@ -6,29 +6,56 @@ package main
 
 import (
 	"bytes"
-	"html/template"
-	"io"
-	"path/filepath"
-
-	"github.com/labstack/echo/v4"
+	"errors"
+	"path"
+	"strings"
 )
 
-type Template struct {
-	templates *template.Template
+type Render struct {
+	Content string
 }
 
-func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	buf := bytes.NewBuffer([]byte{})
-	err := t.templates.ExecuteTemplate(buf, name, data)
+var (
+	ErrNotFound = errors.New(`Not found`)
+)
 
-	_, err = buf.WriteTo(w)
-	return err
-}
-
-func LoadTemplates() *Template {
-	t := &Template{
-		templates: template.Must(template.New(``).Delims(`[[`, `]]`).ParseGlob(
-			filepath.Join(cfg.Root, "templates", "*.html"))),
+func getTemplate(page *Page) string {
+	if len(page.Template) > 0 {
+		return page.Template
 	}
-	return t
+	parent := page.parent
+	for parent != nil {
+		if len(parent.Template) > 0 {
+			return parent.Template
+		}
+		parent = parent.parent
+	}
+	return ``
+}
+
+func RenderPage(url string) (string, error) {
+	var (
+		err    error
+		ok     bool
+		page   *Page
+		render Render
+	)
+	if page, ok = pages[url]; !ok {
+		if !strings.HasSuffix(url, `.html`) {
+			if page, ok = pages[path.Join(url, `index.html`)]; !ok {
+				page = pages[path.Join(url, `readme.html`)]
+			}
+		}
+	}
+	if page == nil {
+		return ``, ErrNotFound
+	}
+	tpl := getTemplate(page)
+	if len(tpl) == 0 {
+		return page.body, err
+	}
+	buf := bytes.NewBuffer([]byte{})
+	render.Content = page.body
+	err = templates.templates.ExecuteTemplate(buf, tpl+`.html`, render)
+	return buf.String(), err
 }
