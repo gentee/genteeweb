@@ -7,7 +7,10 @@ package main
 import (
 	"bytes"
 	"errors"
+	"io/ioutil"
+	"os"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -17,6 +20,7 @@ type Render struct {
 
 var (
 	ErrNotFound = errors.New(`Not found`)
+	ErrContent  = errors.New(`Invalid content`)
 )
 
 func getTemplate(page *Page) string {
@@ -50,6 +54,46 @@ func RenderPage(url string) (string, error) {
 	if page == nil {
 		return ``, ErrNotFound
 	}
+	file := filepath.Join(cfg.WebDir, filepath.FromSlash(page.url))
+	var exist bool
+	if cfg.mode != ModeDynamic {
+		if _, err := os.Stat(file); err == nil {
+			exist = true
+		}
+	}
+	switch cfg.mode {
+	case ModeLive:
+		if exist {
+			if finfo, err := os.Stat(page.file); err == nil {
+				if finfo.ModTime().After(page.modtime) {
+					exist = false
+					page = ReadContent(path.Dir(page.url), page.file, page.parent)
+					if page == nil {
+						return ``, ErrContent
+					}
+					pages[page.url] = page
+					for i, cur := range page.parent.pages {
+						if cur.url == page.url {
+							page.parent.pages[i] = page
+							break
+						}
+					}
+				}
+			}
+		}
+	case ModeCache:
+	case ModeStatic:
+		if !exist {
+			return ``, ErrNotFound
+		}
+	}
+	if exist {
+		data, err := ioutil.ReadFile(file)
+		if err != nil {
+			return ``, err
+		}
+		return string(data), nil
+	}
 	tpl := getTemplate(page)
 	if len(tpl) == 0 {
 		return page.body, err
@@ -57,5 +101,8 @@ func RenderPage(url string) (string, error) {
 	buf := bytes.NewBuffer([]byte{})
 	render.Content = page.body
 	err = templates.templates.ExecuteTemplate(buf, tpl+`.html`, render)
+	if cfg.mode != ModeDynamic {
+		err = ioutil.WriteFile(file, buf.Bytes(), os.ModePerm)
+	}
 	return buf.String(), err
 }

@@ -30,7 +30,9 @@ type Config struct {
 	WebDir  string `yaml:"webdir"`  // directory for static web files, www if it is empty
 	Mode    string `yaml:"mode"`    // mode: static, cache, live. Default, live
 	Lang    string `yaml:"lang"`    // default language. By default, en
-	mode    int
+	AutoDel bool   `yaml:"autodel"` // delete all static .html files at the start, except assets.
+	// By default, false
+	mode int
 }
 
 var (
