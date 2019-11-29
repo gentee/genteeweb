@@ -68,6 +68,7 @@ func createStatic() {
 func main() {
 	golog.SetTimeFormat("2006/01/02 15:04:05")
 	LoadSettings()
+	golog.Infof(`Mode: %s`, cfg.Mode)
 	LoadContent()
 	LoadTemplates()
 	if cfg.AutoDel {

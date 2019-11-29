@@ -7,15 +7,20 @@ package main
 import (
 	"bytes"
 	"errors"
+	"html/template"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/alecthomas/chroma/formatters/html"
+	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting"
 )
 
 type Render struct {
-	Content string
+	Content template.HTML
 }
 
 var (
@@ -99,7 +104,22 @@ func RenderPage(url string) (string, error) {
 		return page.body, err
 	}
 	buf := bytes.NewBuffer([]byte{})
-	render.Content = page.body
+
+	markdown := goldmark.New(
+		goldmark.WithExtensions(
+			highlighting.NewHighlighting(
+				highlighting.WithStyle("monokai"),
+				highlighting.WithFormatOptions(
+					html.WithLineNumbers(true),
+				),
+			),
+		),
+	)
+	var markDown bytes.Buffer
+	if err = markdown.Convert([]byte(page.body), &markDown); err != nil {
+		return ``, err
+	}
+	render.Content = template.HTML(markDown.String())
 	err = templates.templates.ExecuteTemplate(buf, tpl+`.html`, render)
 	if cfg.mode != ModeDynamic {
 		err = ioutil.WriteFile(file, buf.Bytes(), os.ModePerm)

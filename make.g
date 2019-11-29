@@ -5,8 +5,7 @@
 
 run {
     str env = $ go env
-    arr.arr.str ret &= FindRegExp(env, `GOPATH="?([^"|\n|\r]*)`)
-	if ret? : $GOPATH = ret[0][1]
+    $GOPATH = RegExp(env, `GOPATH="?([^"|\n|\r]*)`)
 
     $ go install 
     $ ${GOPATH}/bin/genteeweb examples/genteeweb.yaml
