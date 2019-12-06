@@ -7,7 +7,6 @@ package main
 import (
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 	"time"
@@ -43,7 +42,38 @@ var (
 	contents = &Content{}
 )
 
-func ReadContent(www, name string, owner *Content) *Page {
+func RemoveCache() {
+	files, err := ioutil.ReadDir(cfg.WebDir)
+	if err != nil {
+		golog.Error(err)
+	}
+	for _, file := range files {
+		fname := file.Name()
+		if fname == `assets` {
+			continue
+		}
+		fname = filepath.Join(cfg.WebDir, fname)
+		if file.IsDir() {
+			err = os.RemoveAll(fname)
+		} else {
+			err = os.Remove(fname)
+		}
+		if err != nil {
+			golog.Error(err)
+		}
+	}
+}
+
+func FileToURL(fName string) string {
+	path := filepath.ToSlash(fName[len(cfg.Content):])
+	if path[0] != '/' {
+		path = `/` + path
+	}
+	path = path[:len(path)-len(filepath.Ext(path))]
+	return strings.ToLower(path + `.html`)
+}
+
+func ReadContent(name string, owner *Content) *Page {
 	data, err := ioutil.ReadFile(name)
 	if err != nil {
 		golog.Fatal(err)
@@ -77,14 +107,13 @@ func ReadContent(www, name string, owner *Content) *Page {
 			}
 		}
 	}
-	fname = fname[:len(fname)-len(filepath.Ext(fname))]
-	page.url = strings.ToLower(path.Join(www, fname+`.html`))
+	page.url = FileToURL(name)
 	page.body = body
 	pages[page.url] = page
 	return page
 }
 
-func readDir(path, www string, owner *Content) {
+func readDir(path string, owner *Content) {
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		golog.Fatal(err)
@@ -95,7 +124,7 @@ func readDir(path, www string, owner *Content) {
 		if file.IsDir() {
 			dirs = append(dirs, fname)
 		} else {
-			page := ReadContent(www, filepath.Join(path, fname), owner)
+			page := ReadContent(filepath.Join(path, fname), owner)
 			if page != nil {
 				owner.pages = append(owner.pages, page)
 			}
@@ -106,12 +135,28 @@ func readDir(path, www string, owner *Content) {
 			dir:    strings.ToLower(dir),
 			parent: owner,
 		}
-		readDir(filepath.Join(path, dir), www+`/`+dir, child)
+		readDir(filepath.Join(path, dir), child)
 		owner.children = append(owner.children, child)
 	}
 }
 
 func LoadContent() {
 	golog.Info(`Reading content...`)
-	readDir(cfg.Content, `/`, contents)
+	readDir(cfg.Content, contents)
+}
+
+func UpdateContent(page *Page) error {
+	page = ReadContent(page.file, page.parent)
+	if page == nil {
+		return ErrContent
+	}
+	pages[page.url] = page
+	for i, cur := range page.parent.pages {
+		if cur.url == page.url {
+			page.parent.pages[i] = page
+			break
+		}
+	}
+	os.Remove(filepath.Join(cfg.WebDir, filepath.FromSlash(page.url)))
+	return nil
 }

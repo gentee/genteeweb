@@ -1,2 +1,37 @@
+<v-btn
+v-scroll="onScroll"
+v-show="fab"
+fab
+dark
+fixed
+bottom
+right
+color="primary"
+@click="toTop"
+>
+<v-icon>mdi-heart</v-icon>
+</v-btn>    
+</v-app>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.js"></script>
+<script>
+new Vue({
+    vuetify: new Vuetify(),
+    el: '#app',
+    data: pageData(),
+    methods: {
+    onScroll (e) {
+        if (typeof window === 'undefined') return
+        const top = window.pageYOffset ||   e.target.scrollTop || 0
+        this.fab = top > 20
+        },
+    toTop () {
+        this.$vuetify.goTo(0)
+        }
+    }
+})
+</script>
 </body>
 </html>

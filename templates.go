@@ -20,6 +20,6 @@ var (
 func LoadTemplates() {
 	templates = &Template{
 		templates: template.Must(template.New(``).Delims(`[[`, `]]`).ParseGlob(
-			filepath.Join(cfg.Root, "templates", "*.html"))),
+			filepath.Join(cfg.Templates, "*.html"))),
 	}
 }

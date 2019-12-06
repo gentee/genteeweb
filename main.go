@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/kataras/golog"
 )
 
@@ -17,25 +18,7 @@ func autoDel() {
 		return
 	}
 	golog.Info(`Deleting static files and directories...`)
-	files, err := ioutil.ReadDir(cfg.WebDir)
-	if err != nil {
-		golog.Fatal(err)
-	}
-	for _, file := range files {
-		fname := file.Name()
-		if fname == `assets` {
-			continue
-		}
-		fname = filepath.Join(cfg.WebDir, fname)
-		if file.IsDir() {
-			err = os.RemoveAll(fname)
-		} else {
-			err = os.Remove(fname)
-		}
-		if err != nil {
-			golog.Fatal(err)
-		}
-	}
+	RemoveCache()
 }
 
 func createDir(content *Content, path string, static bool) {
@@ -66,6 +49,8 @@ func createStatic() {
 }
 
 func main() {
+	var err error
+
 	golog.SetTimeFormat("2006/01/02 15:04:05")
 	LoadSettings()
 	golog.Infof(`Mode: %s`, cfg.Mode)
@@ -81,6 +66,17 @@ func main() {
 		} else {
 			createDir(contents, cfg.WebDir, false)
 		}
+	}
+	if cfg.mode == ModeLive {
+		watcher, err = fsnotify.NewWatcher()
+		if err != nil {
+			golog.Fatal(err)
+		}
+		defer watcher.Close()
+		if err = WatchDirs(); err != nil {
+			golog.Fatal(err)
+		}
+		go StartLive()
 	}
 	RunServer()
 }

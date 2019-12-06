@@ -49,12 +49,18 @@ func RenderPage(url string) (string, error) {
 		page   *Page
 		render Render
 	)
+	if cfg.mode == ModeLive {
+		mutexPage.RLock()
+	}
 	if page, ok = pages[url]; !ok {
 		if !strings.HasSuffix(url, `.html`) {
 			if page, ok = pages[path.Join(url, `index.html`)]; !ok {
 				page = pages[path.Join(url, `readme.html`)]
 			}
 		}
+	}
+	if cfg.mode == ModeLive {
+		mutexPage.RUnlock()
 	}
 	if page == nil {
 		return ``, ErrNotFound
@@ -68,24 +74,6 @@ func RenderPage(url string) (string, error) {
 	}
 	switch cfg.mode {
 	case ModeLive:
-		if exist {
-			if finfo, err := os.Stat(page.file); err == nil {
-				if finfo.ModTime().After(page.modtime) {
-					exist = false
-					page = ReadContent(path.Dir(page.url), page.file, page.parent)
-					if page == nil {
-						return ``, ErrContent
-					}
-					pages[page.url] = page
-					for i, cur := range page.parent.pages {
-						if cur.url == page.url {
-							page.parent.pages[i] = page
-							break
-						}
-					}
-				}
-			}
-		}
 	case ModeCache:
 	case ModeStatic:
 		if !exist {
