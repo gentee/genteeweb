@@ -21,6 +21,8 @@ import (
 
 type Render struct {
 	Content template.HTML
+	Title   string
+	Logo    *Logo
 }
 
 var (
@@ -108,6 +110,8 @@ func RenderPage(url string) (string, error) {
 		return ``, err
 	}
 	render.Content = template.HTML(markDown.String())
+	render.Title = page.Title
+	render.Logo = page.parent.Logo
 	err = templates.templates.ExecuteTemplate(buf, tpl+`.html`, render)
 	if cfg.mode != ModeDynamic {
 		err = ioutil.WriteFile(file, buf.Bytes(), os.ModePerm)

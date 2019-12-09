@@ -28,8 +28,13 @@ type Page struct {
 	parent  *Content
 }
 
+type Logo struct {
+	Name string `yaml:"name"`
+}
+
 type Content struct {
 	Template string `yaml:"template"`
+	Logo     *Logo  `yaml:"logo"`
 
 	dir      string
 	parent   *Content
@@ -136,6 +141,13 @@ func readDir(path string, owner *Content) {
 			parent: owner,
 		}
 		readDir(filepath.Join(path, dir), child)
+		if child.Logo == nil {
+			parent := child.parent
+			for parent != nil && child.Logo == nil {
+				child.Logo = parent.Logo
+				parent = parent.parent
+			}
+		}
 		owner.children = append(owner.children, child)
 	}
 }

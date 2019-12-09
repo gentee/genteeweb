@@ -159,69 +159,15 @@
               </v-navigation-drawer-->
 <v-container fluid center>
     <v-layout center>
-        <div style="display: flex;flex-direction: row;justify-content:center;width: 100%;">
+        <div style="margin-top: 2rem;display: flex;flex-direction: row;justify-content:center;width: 100%;">
               <!--v-flex md2 >
                     <v-container style="max-width:256px" -->
-                        <div>
-                                <div style="position: sticky;top:2em;padding-top:2rem;
-                                align-self: stretch;overflow: auto;">
-                        
-                            OOOPSS 3<br>
-        OOOPSS OOOPS 11<br>   
-        OOOPSS START AGAIN<br>
-        OOOPSS AGAIN<br>
-        OOOPSS AGAIN 55<br>
-    OOOPSS MORE<br>
-    OOOPSS 7<br>
-    OOOPSS OOOPS<br>
-    OOOPSS 8<br>
-    OOOPSS 9<br>
-    OOOPSS 10<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS OOOPS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS OOOPS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS OOOPS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS OOOPS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS OOOPS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS OOOPS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS OOOPS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS<br>
-</div>
-</div>
+                    <div class="d-none d-md-block">
+                       <div style="position: sticky;top: 3rem; padding-top: 2rem; 
+                              align-self: stretch;overflow: auto;">
+                              <left-nav/>
+                      </div>
+                    </div>
     <!--/v-container>
 </v-flex-->
     <!--v-flex>
@@ -235,17 +181,11 @@ OOOPSS<br>
 </v-container>
 </v-flex-->
 </div>
-<v-flex md2 class="d-md-none d-lg-flex">
-        <v-container style="max-width:256px;"  >
-            <!--div class="d-md-none d-lg-flex" style="position: sticky;"-->
-                RIGHT<br>
-        RIGHT<br>
-        RIGHT<br>
-        RIGHT<br>
-        RIGHT RIGHT<br>
-    <!--/div-->
-        </v-container>
-</v-flex>
+  <div class="d-none d-lg-block">
+      <div style="position: sticky;top: 3rem; padding-top: 2rem;align-self: stretch;overflow: auto;">
+            <right-nav/>
+    </div>
+  </div>
 </div>
 </v-layout>
 </v-container>              
@@ -274,16 +214,13 @@ link
 </v-list-item>
 </v-list>
 </v-navigation-drawer-->
-
-<!--span v-for="i in 3">{{ i }} </span>
-<div>OK hgjuhgjug</div>
-<p>{{ hello }}</p>
-<v-btn text>Button</v-btn-->
 <script>
 function pageData() { 
     return {
         fab: false, 
-        title: 'Hello World!',
+        drawer: null,
+        drawerRight: null,
+        logo: [[if .Logo]][[ .Logo.Name ]][[end]],
                items: [
                   { title: 'Dashboard', icon: 'mdi-view-dashboard' },
                   { title: 'Photos', icon: 'mdi-image' },

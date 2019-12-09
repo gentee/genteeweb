@@ -9,7 +9,7 @@ right
 color="primary"
 @click="toTop"
 >
-<v-icon>mdi-heart</v-icon>
+<v-icon>mdi-chevron-up</v-icon>
 </v-btn>    
 </v-app>
 </div>
@@ -17,6 +17,36 @@ color="primary"
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.js"></script>
 <script>
+const leftNav = `<div><span><b>OOOPS 2</b></span>
+    OOOPSS 2<br>
+    OOOPSS OOOPS 11<br>   
+    OOOPSS START AGAIN<br>
+    OOOPSS AGAIN<br>
+    OOOPSS AGAIN 55<br>
+OOOPSS MORE<br>
+OOOPSS 7<br>
+OOOPSS OOOPS<br>
+OOOPSS 8<br>
+OOOPSS 9<br>
+OOOPSS 10<br>
+OOOPSS<br>
+OOOPSS<br>
+OOOPSS OOOPS<br>
+</div>`;
+
+const rightNav = `<div><span><b>Right</b></span>
+    Right panel<br>
+    Contents<br>   
+</div>`;
+
+Vue.component('left-nav', { 
+    template: leftNav,
+})
+
+Vue.component('right-nav', { 
+    template: rightNav,
+})
+
 new Vue({
     vuetify: new Vuetify(),
     el: '#app',
@@ -32,6 +62,8 @@ new Vue({
         }
     }
 })
+
+
 </script>
 </body>
 </html>
