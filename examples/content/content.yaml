@@ -1,3 +1,8 @@
 template: overview
 logo: 
    name: My company
+menu: 
+  - title: Path1
+    href: /path1 
+  - title: GitHub
+    href: https://github.com/gentee/genteeweb

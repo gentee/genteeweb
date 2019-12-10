@@ -32,9 +32,15 @@ type Logo struct {
 	Name string `yaml:"name"`
 }
 
+type MenuItem struct {
+	Title string `yaml:"title"`
+	Href  string `yaml:"href"`
+}
+
 type Content struct {
-	Template string `yaml:"template"`
-	Logo     *Logo  `yaml:"logo"`
+	Template string      `yaml:"template"`
+	Logo     *Logo       `yaml:"logo"`
+	Menu     []*MenuItem `yaml:"menu"`
 
 	dir      string
 	parent   *Content
@@ -67,6 +73,7 @@ func RemoveCache() {
 			golog.Error(err)
 		}
 	}
+	createDir(contents, cfg.WebDir, false)
 }
 
 func FileToURL(fName string) string {
@@ -141,12 +148,15 @@ func readDir(path string, owner *Content) {
 			parent: owner,
 		}
 		readDir(filepath.Join(path, dir), child)
-		if child.Logo == nil {
-			parent := child.parent
-			for parent != nil && child.Logo == nil {
+		parent := child.parent
+		for parent != nil {
+			if child.Logo == nil {
 				child.Logo = parent.Logo
-				parent = parent.parent
 			}
+			if child.Menu == nil {
+				child.Menu = parent.Menu
+			}
+			parent = parent.parent
 		}
 		owner.children = append(owner.children, child)
 	}

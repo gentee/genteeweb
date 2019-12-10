@@ -4,8 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>[[ .Title ]]</title>
-  <!--link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
-  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script-->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
@@ -14,69 +12,47 @@
   <div id = "app">
     <v-app>
       <nav>
-        <v-app-bar
-        color="light-blue darken-4"
-        dark
-        dense
-        app
-        >
+        <v-app-bar color="light-blue darken-4" dark dense app>
           <v-app-bar-nav-icon class="d-md-none" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
           <v-toolbar-title>{{ logo }}</v-toolbar-title>
           <v-spacer> </v-spacer>
             <div class="hidden-sm-and-down">
-              <v-btn text href="/">
-                Download
-              </v-btn>
-
-              <v-btn text href="/ok">
-                  Blog 1
-              </v-btn>
-          
-            <v-btn text  href="/">
-                Blog
-              </v-btn>
-        
-            <v-btn text  href="/">
-                  Music
+              <v-btn text v-for="item in menu" 
+                :href="item.href">
+                {{item.title}}
               </v-btn>
             </div>
             <v-spacer> </v-spacer>
-            <v-btn icon class="d-lg-none" @click.stop="drawerRight = !drawerRight">
+            <v-btn icon class="d-lg-none" @click.stop="rightpanel = !rightpanel">
               <v-icon>mdi-text</v-icon>
           </v-btn>
           <v-menu offset-y>
               <template v-slot:activator="{ on }">
                 <v-btn icon class="d-md-none"
-                v-on="on"
-                >
-                      <v-icon>mdi-dots-vertical</v-icon>
-                 </v-btn>
+                v-on="on" >
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
               </template>
               <v-list>
-                <v-list-item href="/">
-                  <v-list-item-title>OK 1</v-list-item-title>
+                <v-list-item  v-for="item in menu" 
+                  :href="item.href">
+                  <v-list-item-title>{{item.title}}</v-list-item-title>
                 </v-list-item>
-                <v-list-item href="/">
-                    <v-list-item-title >OK 2</v-list-item-title>
-                  </v-list-item>
-                </v-list>
+              </v-list>
           </v-menu>
         </v-app-bar>
-        <v-navigation-drawer 
-        class = "d-md-none"
-        v-model="drawer"
-        absolute
-        temporary
+        <v-navigation-drawer class = "d-md-none" v-model="drawer"
+        absolute temporary style="position:fixed; overflow-y:auto;"
         >
-          <left-nav/>
+        <v-container>
+            <left-nav/>
+          </v-container>
         </v-navigation-drawer>
-        <v-navigation-drawer 
-        class = "d-lg-none"
-        right
-        v-model="drawerRight"
-        absolute
-        temporary
+        <v-navigation-drawer class = "d-lg-none" right v-model="rightpanel"
+        absolute temporary style="position:fixed; overflow-y:auto;"
         >
+         <v-container>
           <right-nav/>
+        </v-container>
         </v-navigation-drawer>
       </nav>

@@ -17,12 +17,14 @@ import (
 	"github.com/alecthomas/chroma/formatters/html"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting"
+	"github.com/yuin/goldmark/parser"
 )
 
 type Render struct {
 	Content template.HTML
 	Title   string
 	Logo    *Logo
+	Menu    []*MenuItem
 }
 
 var (
@@ -104,6 +106,9 @@ func RenderPage(url string) (string, error) {
 				),
 			),
 		),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
 	)
 	var markDown bytes.Buffer
 	if err = markdown.Convert([]byte(page.body), &markDown); err != nil {
@@ -112,6 +117,7 @@ func RenderPage(url string) (string, error) {
 	render.Content = template.HTML(markDown.String())
 	render.Title = page.Title
 	render.Logo = page.parent.Logo
+	render.Menu = page.parent.Menu
 	err = templates.templates.ExecuteTemplate(buf, tpl+`.html`, render)
 	if cfg.mode != ModeDynamic {
 		err = ioutil.WriteFile(file, buf.Bytes(), os.ModePerm)

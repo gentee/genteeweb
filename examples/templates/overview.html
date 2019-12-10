@@ -92,7 +92,7 @@
     <div class="column is-hidden-touch is-hidden-desktop-only is-pinned" style="max-width: 256px;">
         rdrdrd
     </div>
-</div-->
+</div--> 
 
 <!--v-navigation-drawer
                           :clipped="drawer.clipped"
@@ -173,12 +173,13 @@
     <!--v-flex>
             <v-container style="max-width:1024px;">
                     <v-content-->
-                    <div style="flex-grow:1;padding: 2rem;min-width: 500px;max-width:1024px;">
+                    <div id="article" style="flex-grow:1;padding: 2rem;min-width: 500px;max-width:1024px;top: 3rem;">
+                      <article>
+                        <!--v-content-->
 [[ .Content ]]
-[[ .Content ]]
-[[ .Content ]]
-<!--/v-content>
-</v-container>
+</article>
+<!--/v-content-->
+<!--/v-container>
 </v-flex-->
 </div>
   <div class="d-none d-lg-block">
@@ -214,19 +215,4 @@ link
 </v-list-item>
 </v-list>
 </v-navigation-drawer-->
-<script>
-function pageData() { 
-    return {
-        fab: false, 
-        drawer: null,
-        drawerRight: null,
-        logo: [[if .Logo]][[ .Logo.Name ]][[end]],
-               items: [
-                  { title: 'Dashboard', icon: 'mdi-view-dashboard' },
-                  { title: 'Photos', icon: 'mdi-image' },
-                  { title: 'About', icon: 'mdi-help-box' },
-                ],
-        }
-}
-    </script>
 [[template "footer.html" .]]

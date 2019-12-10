@@ -1,3 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head> 
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Custom title</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+</head>
+<body>
+  <div id = "app">
+    <v-app>
+      <nav>
+        <v-app-bar color="light-blue darken-4" dark dense app>
+          <v-app-bar-nav-icon class="d-md-none" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+          <v-toolbar-title>{{ logo }}</v-toolbar-title>
+          <v-spacer> </v-spacer>
+            <div class="hidden-sm-and-down">
+              <v-btn text v-for="item in menu" 
+                :href="item.href">
+                {{item.title}}
+              </v-btn>
+            </div>
+            <v-spacer> </v-spacer>
+            <v-btn icon class="d-lg-none" @click.stop="rightpanel = !rightpanel">
+              <v-icon>mdi-text</v-icon>
+          </v-btn>
+          <v-menu offset-y>
+              <template v-slot:activator="{ on }">
+                <v-btn icon class="d-md-none"
+                v-on="on" >
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item  v-for="item in menu" 
+                  :href="item.href">
+                  <v-list-item-title>{{item.title}}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+          </v-menu>
+        </v-app-bar>
+        <v-navigation-drawer class = "d-md-none" v-model="drawer"
+        absolute temporary style="position:fixed; overflow-y:auto;"
+        >
+        <v-container>
+            <left-nav/>
+          </v-container>
+        </v-navigation-drawer>
+        <v-navigation-drawer class = "d-lg-none" right v-model="rightpanel"
+        absolute temporary style="position:fixed; overflow-y:auto;"
+        >
+         <v-container>
+          <right-nav/>
+        </v-container>
+        </v-navigation-drawer>
+      </nav>
+
+<h1 id="index-page">Index page</h1>
+<p>Some index text</p>
+
+<h3>Path 1</h3>
 <v-btn
 v-scroll="onScroll"
 v-show="fab"
@@ -34,10 +97,13 @@ function getRightList() {
 };
 
 const menu = [
-    [[ range .Menu ]]{
-        title: [[ .Title ]],
-        href: [[ .Href ]],
-        },[[ end ]]
+    {
+        title: "Path1",
+        href: "/path1",
+        },{
+        title: "GitHub",
+        href: "https://github.com/gentee/genteeweb",
+        },
 ];
 
 function pageData() { 
@@ -46,10 +112,10 @@ function pageData() {
         fab: false, 
         drawer: null,
         rightpanel: null,
-        logo: [[if .Logo]][[ .Logo.Name ]][[end]],
+        logo: "My company",
         menu: menu,
         rightList: rightList,
-//        group: null,
+
         }
 }
 </script>
