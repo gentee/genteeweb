@@ -15,11 +15,12 @@ function walkHeaders(root) {
     if( root != null && root.nodeType === 1 && root.nodeName !== 'script' ) {
         var name = root.nodeName.toLowerCase();
         if( name == 'h2' || name == 'h3' ) {
-            console.log(root);
             root.setAttribute("style", "padding-top: 4rem; margin-top: -4rem;");
             rightList.push( {
                 title: root.innerHTML,
                 href: '#' + root.id,
+                active: rightList.length == 0,
+                sub: name == 'h3',
             });
         } else {
             for( var i = 0; i < root.childNodes.length; i++ ) {
@@ -49,6 +50,7 @@ function pageData() {
         logo: [[if .Logo]][[ .Logo.Name ]][[end]],
         menu: menu,
         rightList: rightList,
+        curh: false,
 //        group: null,
         }
 }
@@ -73,18 +75,16 @@ OOOPSS<br>
 OOOPSS OOOPS<br>
 </div>`;
 
-const rightNav = `<div style="position:sticky"><v-icon>mdi-text</v-icon> On this page
-    <v-list-item-group
-        color="indigo"
-    >
-       <v-list-item dense
-          v-for="item in rightList"
-          :href = "item.href"
-          @click="rightpanel = false"
-       >
+const rightNav = `<div style="position:sticky">
+    <a href="/" class="black--text mb-5" target="_blank" style="display: block;text-decoration: none;"><v-icon class="mr-2">mdi-github-circle</v-icon>Edit on GitHub</a>
+    <div class="label"><v-icon class="mr-2">mdi-text</v-icon>On this page</div>
+    <div id="rightlist">
+    <a v-for="item in rightList" :href = "item.href" :class="{tactive: item.active, 
+         'grey--text darken-4--text': !item.active, 'pl-8': item.sub}"
+            class="thispage">
           {{item.title}}
-        </v-list-item>
-    </v-list-item-group>
+    </a>
+    </div>
 </div>`;
 
 Vue.component('left-nav', { 
@@ -92,9 +92,6 @@ Vue.component('left-nav', {
 })
 
 Vue.component('right-nav', { 
-/*    data: () => ({
-        group: null,
-    }),*/
     template: rightNav,
 })
 
@@ -102,18 +99,29 @@ new Vue({
     vuetify: new Vuetify(),
     el: '#app',
     data: pageData(),
-/*    watch: {
-      group () {
-        console.log('click');
-        rightpanel = false;
-      },
-    },*/
     methods: {
     onScroll (e) {
         if (typeof window === 'undefined') return
         const top = window.pageYOffset ||   e.target.scrollTop || 0
         this.fab = top > 20
-        },
+
+        var rl = document.getElementById('rightlist');
+        var iactive = -1;
+        for( var i = 0; i < rl.childNodes.length; i++ ) {
+            var currLink = rl.childNodes[i];
+            var refElement = document.getElementById(rightList[i].href.substr(1));
+            if (refElement.offsetTop <= top || refElement.offsetTop - 50 <= top){
+                iactive = i;
+            }
+            rightList[i].active = false;
+        }
+        if (iactive >=0) {
+            rightList[iactive].active = true;
+            this.curh = iactive;
+        } else {
+            this.curh = false;
+        }
+     },
     toTop () {
         this.$vuetify.goTo(0)
         }
