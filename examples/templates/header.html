@@ -24,11 +24,17 @@
       font-weight: bold;
       text-decoration: none;
     }
+    h1 {
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #ddd;
+      padding: 1rem 0;
+    }
     h2 {
-      margin-bottom: 16px;
+      margin-bottom: 1.5rem;
+      color: #555;
     }
     h3 {
-      margin-bottom: 8px;
+      margin-bottom: 1rem;
     }
     pre {
       margin: 8px 0px;
@@ -76,7 +82,8 @@
         absolute temporary style="position:fixed; overflow-y:auto;"
         >
         <v-container>
-            <left-nav/>
+            <left-nav>
+              </left-nav>
           </v-container>
         </v-navigation-drawer>
         <v-navigation-drawer class = "d-lg-none" right v-model="rightpanel"

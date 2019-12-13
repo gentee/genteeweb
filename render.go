@@ -25,26 +25,13 @@ type Render struct {
 	Title   string
 	Logo    *Logo
 	Menu    []*MenuItem
+	Nav     []*NavItem
 }
 
 var (
 	ErrNotFound = errors.New(`Not found`)
 	ErrContent  = errors.New(`Invalid content`)
 )
-
-func getTemplate(page *Page) string {
-	if len(page.Template) > 0 {
-		return page.Template
-	}
-	parent := page.parent
-	for parent != nil {
-		if len(parent.Template) > 0 {
-			return parent.Template
-		}
-		parent = parent.parent
-	}
-	return ``
-}
 
 func RenderPage(url string) (string, error) {
 	var (
@@ -91,7 +78,10 @@ func RenderPage(url string) (string, error) {
 		}
 		return string(data), nil
 	}
-	tpl := getTemplate(page)
+	if len(page.Template) == 0 {
+		page.Template = page.parent.Template
+	}
+	tpl := page.Template
 	if len(tpl) == 0 {
 		return page.body, err
 	}
@@ -118,7 +108,10 @@ func RenderPage(url string) (string, error) {
 	render.Title = page.Title
 	render.Logo = page.parent.Logo
 	render.Menu = page.parent.Menu
-	err = templates.templates.ExecuteTemplate(buf, tpl+`.html`, render)
+	render.Nav = page.parent.Nav
+	if err = templates.templates.ExecuteTemplate(buf, tpl+`.html`, render); err != nil {
+		return ``, err
+	}
 	if cfg.mode != ModeDynamic {
 		err = ioutil.WriteFile(file, buf.Bytes(), os.ModePerm)
 	}

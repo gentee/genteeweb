@@ -8,6 +8,40 @@ fab dark fixed bottom right color="primary"
 </v-btn>    
 </v-app>
 </div>
+<script type="text/x-template" id="leftnav">
+<v-list dense>
+     [[ range $item := .Nav ]]
+      [[if .Children ]]
+      <v-list-group >
+            <template v-slot:activator>
+              <v-list-item-title>[[ $item.Title ]]</v-list-item-title>
+            </template>
+          [[ range $group := .Children ]]
+              [[if $group.Children ]]
+              <v-list-group  no-action sub-group >
+                    <template v-slot:activator>
+                      <v-list-item-content>
+                        <v-list-item-title>[[ $group.Title]]</v-list-item-title>
+                      </v-list-item-content>
+                    </template>
+                    [[ range $subgroup := $group.Children ]]
+                <v-list-item link >
+                  <v-list-item-title>[[$subgroup.Title]]</v-list-item-title>
+                </v-list-item>
+                    [[end]]
+              </v-list-group>
+              [[else]]
+                <v-list-item class="pl-8"><v-list-item-title>[[ $group.Title ]]</v-list-item-title></v-list-item>
+              [[end]]
+           [[end]]
+        </v-list-group>
+        [[else]]
+            <v-list-item><v-list-item-title>[[ $item.Title ]]</v-list-item-title></v-list-item>
+        [[end]]
+     [[ end ]]
+</v-list>
+</script>
+
 <script>
 var rightList = [];
 
@@ -57,24 +91,8 @@ function pageData() {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.js"></script>
-<script>
-const leftNav = `<div><span><b>OOOPS 2</b></span>
-    OOOPSS 2<br>
-    OOOPSS OOOPS 11<br>   
-    OOOPSS START AGAIN<br>
-    OOOPSS AGAIN<br>
-    OOOPSS AGAIN 55<br>
-OOOPSS MORE<br>
-OOOPSS 7<br>
-OOOPSS OOOPS<br>
-OOOPSS 8<br>
-OOOPSS 9<br>
-OOOPSS 10<br>
-OOOPSS<br>
-OOOPSS<br>
-OOOPSS OOOPS<br>
-</div>`;
 
+<script>
 const rightNav = `<div style="position:sticky">
     <a href="/" class="black--text mb-5" target="_blank" style="display: block;text-decoration: none;"><v-icon class="mr-2">mdi-github-circle</v-icon>Edit on GitHub</a>
     <div class="label"><v-icon class="mr-2">mdi-text</v-icon>On this page</div>
@@ -88,7 +106,19 @@ const rightNav = `<div style="position:sticky">
 </div>`;
 
 Vue.component('left-nav', { 
-    template: leftNav,
+    template: '#leftnav',
+    data: () => ({
+      admins: [
+        ['Management', 'people_outline'],
+        ['Settings', 'settings'],
+      ],
+      cruds: [
+        ['Create', 'add'],
+        ['Read', 'insert_drive_file'],
+        ['Update', 'update'],
+        ['Delete', 'delete'],
+      ],
+    }),
 })
 
 Vue.component('right-nav', { 

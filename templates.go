@@ -17,9 +17,16 @@ var (
 	templates *Template
 )
 
+func toJS(s string) template.JS {
+	return template.JS(s)
+}
+
 func LoadTemplates() {
 	templates = &Template{
-		templates: template.Must(template.New(``).Delims(`[[`, `]]`).ParseGlob(
-			filepath.Join(cfg.Templates, "*.html"))),
+		templates: template.Must(template.New(``).Delims(`[[`, `]]`).Funcs(
+			template.FuncMap{"toJS": toJS},
+		).
+			ParseGlob(
+				filepath.Join(cfg.Templates, "*.html"))),
 	}
 }

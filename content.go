@@ -5,6 +5,7 @@
 package main
 
 import (
+	"html/template"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -37,10 +38,17 @@ type MenuItem struct {
 	Href  string `yaml:"href"`
 }
 
+type NavItem struct {
+	Title    template.JS `yaml:"title"`
+	Href     string      `yaml:"href"`
+	Children []*NavItem  `yaml:"children"`
+}
+
 type Content struct {
 	Template string      `yaml:"template"`
 	Logo     *Logo       `yaml:"logo"`
 	Menu     []*MenuItem `yaml:"menu"`
+	Nav      []*NavItem  `yaml:"nav"`
 
 	dir      string
 	parent   *Content
@@ -155,6 +163,12 @@ func readDir(path string, owner *Content) {
 			}
 			if child.Menu == nil {
 				child.Menu = parent.Menu
+			}
+			if child.Nav == nil {
+				child.Nav = parent.Nav
+			}
+			if len(child.Template) == 0 {
+				child.Template = parent.Template
 			}
 			parent = parent.parent
 		}

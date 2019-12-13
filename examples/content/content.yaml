@@ -6,3 +6,32 @@ menu:
     href: /path1 
   - title: GitHub
     href: https://github.com/gentee/genteeweb
+
+nav:
+  - title: Name 1
+    href: /
+  - title: Name 2
+    href: /
+  - title: Group 1
+    children: 
+      - title: Name 3
+        href: /
+      - title: Name 4
+        href: /
+  - title: Name 5
+    href: /
+  - title: Group 2
+    children: 
+      - title: Name 6
+        href: /
+      - title: Name 7
+        href: /
+      - title: Subgroup
+        children:
+          - title: Subitem 1
+            href: /
+          - title: Subitem 2
+            href: /
+      - title: Name 8
+        href: /
+
