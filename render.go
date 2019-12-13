@@ -24,6 +24,7 @@ type Render struct {
 	Content template.HTML
 	Title   string
 	Logo    *Logo
+	Params  map[string]string
 	Menu    []*MenuItem
 	Nav     []*NavItem
 }
@@ -107,6 +108,7 @@ func RenderPage(url string) (string, error) {
 	render.Content = template.HTML(markDown.String())
 	render.Title = page.Title
 	render.Logo = page.parent.Logo
+	render.Params = page.parent.Params
 	render.Menu = page.parent.Menu
 	render.Nav = page.parent.Nav
 	if err = templates.templates.ExecuteTemplate(buf, tpl+`.html`, render); err != nil {

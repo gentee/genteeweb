@@ -33,6 +33,10 @@ type Logo struct {
 	Name string `yaml:"name"`
 }
 
+type PathItem struct {
+	Dir string `yaml:"dir"`
+}
+
 type MenuItem struct {
 	Title string `yaml:"title"`
 	Href  string `yaml:"href"`
@@ -45,10 +49,12 @@ type NavItem struct {
 }
 
 type Content struct {
-	Template string      `yaml:"template"`
-	Logo     *Logo       `yaml:"logo"`
-	Menu     []*MenuItem `yaml:"menu"`
-	Nav      []*NavItem  `yaml:"nav"`
+	Template string            `yaml:"template"`
+	Logo     *Logo             `yaml:"logo"`
+	Params   map[string]string `yaml:"params"`
+	Paths    []*PathItem       `yaml:"paths"`
+	Menu     []*MenuItem       `yaml:"menu"`
+	Nav      []*NavItem        `yaml:"nav"`
 
 	dir      string
 	parent   *Content
@@ -160,6 +166,9 @@ func readDir(path string, owner *Content) {
 		for parent != nil {
 			if child.Logo == nil {
 				child.Logo = parent.Logo
+			}
+			if child.Params == nil {
+				child.Params = parent.Params
 			}
 			if child.Menu == nil {
 				child.Menu = parent.Menu

@@ -1,11 +1,20 @@
-template: overview
+template: default
 logo: 
-   name: My company
+   name: Demo site
+
+params:   
+  copyright: Copyright © GenteeWeb community, 2019 All rights reserved.
+
+paths: 
+  - dir: ../docs
+
 menu: 
-  - title: Path1
-    href: /path1 
+  - title: Documentation
+    href: /docs  
   - title: GitHub
     href: https://github.com/gentee/genteeweb
+  - title: Demo root
+    href: /
 
 nav:
   - title: Name 1

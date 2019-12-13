@@ -6,19 +6,22 @@ fab dark fixed bottom right color="primary"
 >
 <v-icon>mdi-chevron-up</v-icon>
 </v-btn>    
+<v-footer app absolute class="py-3 d-flex flex-column justify-center blue-grey">
+    <v-text class="white--text">[[.Params.copyright]]</v-text> 
+</v-footer>
 </v-app>
 </div>
 <script type="text/x-template" id="leftnav">
 <v-list dense>
-     [[ range $item := .Nav ]]
-      [[if .Children ]]
-      <v-list-group >
+    [[ range $item := .Nav ]]
+        [[if .Children ]]
+        <v-list-group >
             <template v-slot:activator>
               <v-list-item-title>[[ $item.Title ]]</v-list-item-title>
             </template>
-          [[ range $group := .Children ]]
-              [[if $group.Children ]]
-              <v-list-group  no-action sub-group >
+            [[ range $group := .Children ]]
+                [[if $group.Children ]]
+                <v-list-group  no-action sub-group >
                     <template v-slot:activator>
                       <v-list-item-content>
                         <v-list-item-title>[[ $group.Title]]</v-list-item-title>
@@ -38,7 +41,7 @@ fab dark fixed bottom right color="primary"
         [[else]]
             <v-list-item><v-list-item-title>[[ $item.Title ]]</v-list-item-title></v-list-item>
         [[end]]
-     [[ end ]]
+    [[ end ]]
 </v-list>
 </script>
 

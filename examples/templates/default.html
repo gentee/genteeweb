@@ -1,0 +1,24 @@
+[[template "header.html" .]]
+<v-container fluid center>
+  <v-layout center>
+    <div style="margin-top: 2rem;display: flex;flex-direction: row;justify-content:center;width: 100%;">
+      <div class="d-none d-md-block">
+        <div style="position: sticky;top: 3rem; padding-top: 2rem; 
+               align-self: stretch;overflow: auto;">
+          <left-nav/>
+        </div>
+      </div>
+      <div id="article" style="flex-grow:1;padding: 2rem;min-width: 500px;max-width:1024px;top: 3rem;">
+          <article>
+          [[ .Content ]]
+          </article>
+      </div>
+      <div class="d-none d-lg-block">
+        <div style="position: sticky;top: 3rem; padding-top: 2rem;align-self: stretch;overflow: auto;">
+          <right-nav/>
+        </div>
+      </div>
+    </div>
+  </v-layout>
+</v-container>              
+[[template "footer.html" .]]
