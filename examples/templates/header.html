@@ -60,6 +60,25 @@
               </v-btn>
             </div>
             <v-spacer> </v-spacer>
+            [[ if .Langs ]]
+            <v-menu offset-y open-on-hover>
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" color="primary" small style="text-transform:none">
+                  <v-text>[[ (index .Langs 0).Title ]]</v-text>
+                  <v-icon right>mdi-menu-down</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                [[ range $index, $item := .Langs]]
+                    [[if ne $index 0 ]]
+                <v-list-item href=[[$item.Href]]>
+                  <v-list-item-title>[[$item.Title]]</v-list-item-title>
+                </v-list-item>
+                   [[end]]
+                [[end]]
+              </v-list>
+            </v-menu>
+            [[end]]
             <v-btn icon class="d-lg-none" @click.stop="rightpanel = !rightpanel">
               <v-icon>mdi-text</v-icon>
           </v-btn>

@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"time"
@@ -55,8 +56,12 @@ type Content struct {
 	Paths    []*PathItem       `yaml:"paths"`
 	Menu     []*MenuItem       `yaml:"menu"`
 	Nav      []*NavItem        `yaml:"nav"`
+	Langs    []string          `yaml:"langs"`
+	DefDir   string            `yaml:"defdir"`
 
 	dir      string
+	url      string
+	lang     string // language code
 	parent   *Content
 	children []*Content
 	pages    []*Page
@@ -90,11 +95,8 @@ func RemoveCache() {
 	createDir(contents, cfg.WebDir, false)
 }
 
-func FileToURL(fName string) string {
-	path := filepath.ToSlash(fName[len(cfg.Content):])
-	if path[0] != '/' {
-		path = `/` + path
-	}
+func FileToURL(page *Page) string {
+	path := path.Join(page.parent.url, filepath.Base(page.file))
 	path = path[:len(path)-len(filepath.Ext(path))]
 	return strings.ToLower(path + `.html`)
 }
@@ -133,35 +135,69 @@ func ReadContent(name string, owner *Content) *Page {
 			}
 		}
 	}
-	page.url = FileToURL(name)
+	page.url = FileToURL(page)
 	page.body = body
 	pages[page.url] = page
 	return page
 }
 
-func readDir(path string, owner *Content) {
-	files, err := ioutil.ReadDir(path)
+func readDir(dpath string, owner *Content) {
+	files, err := ioutil.ReadDir(dpath)
 	if err != nil {
 		golog.Fatal(err)
 	}
-	var dirs []string
+	var (
+		dirs []string
+	)
 	for _, file := range files {
 		fname := file.Name()
 		if file.IsDir() {
-			dirs = append(dirs, fname)
+			dirs = append(dirs, filepath.Join(dpath, fname))
 		} else {
-			page := ReadContent(filepath.Join(path, fname), owner)
+			page := ReadContent(filepath.Join(dpath, fname), owner)
 			if page != nil {
 				owner.pages = append(owner.pages, page)
 			}
 		}
 	}
-	for _, dir := range dirs {
-		child := &Content{
-			dir:    strings.ToLower(dir),
-			parent: owner,
+	readme := path.Join(owner.url, `readme.html`)
+	index := path.Join(owner.url, `index.html`)
+	if pages[readme] != nil && pages[index] == nil {
+		page := pages[readme]
+		page.url = index
+		delete(pages, readme)
+		pages[index] = page
+	}
+	for _, item := range owner.Paths {
+		dir, err := filepath.Abs(item.Dir)
+		if err != nil {
+			golog.Fatal(err)
 		}
-		readDir(filepath.Join(path, dir), child)
+		dirs = append(dirs, dir)
+		cfg.paths = append(cfg.paths, dir)
+	}
+	for _, dir := range dirs {
+		var (
+			url, lang string
+		)
+		base := strings.ToLower(filepath.Base(dir))
+		if base == owner.DefDir {
+			url = owner.url
+		} else {
+			url = path.Join(owner.url, base)
+		}
+		for _, ilang := range owner.Langs {
+			if ilang == base {
+				lang = ilang
+			}
+		}
+		child := &Content{
+			dir:    base,
+			parent: owner,
+			url:    url,
+			lang:   lang,
+		}
+		readDir(dir, child)
 		parent := child.parent
 		for parent != nil {
 			if child.Logo == nil {
@@ -176,6 +212,12 @@ func readDir(path string, owner *Content) {
 			if child.Nav == nil {
 				child.Nav = parent.Nav
 			}
+			if child.Langs == nil {
+				child.Langs = parent.Langs
+			}
+			if len(child.DefDir) == 0 {
+				child.DefDir = parent.DefDir
+			}
 			if len(child.Template) == 0 {
 				child.Template = parent.Template
 			}
@@ -187,6 +229,8 @@ func readDir(path string, owner *Content) {
 
 func LoadContent() {
 	golog.Info(`Reading content...`)
+	os.Chdir(filepath.Dir(cfg.Content))
+	contents.url = `/`
 	readDir(cfg.Content, contents)
 }
 

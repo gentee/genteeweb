@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head> 
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title></title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <style type="text/css">
+    .label {
+      color: #444;
+      margin-bottom: 16px;
+    }
+    .thispage {
+      display:block;
+      text-decoration: none;
+      font-weight:bold;
+      border-left: 3px solid #ddd;
+      padding: 4px 0px 4px 16px;
+    }
+    .tactive {
+      border-left: #1976d2 3px solid;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    h1 {
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #ddd;
+      padding: 1rem 0;
+    }
+    h2 {
+      margin-bottom: 1.5rem;
+      color: #555;
+    }
+    h3 {
+      margin-bottom: 1rem;
+    }
+    pre {
+      margin: 8px 0px;
+      padding: 1rem 0rem;
+    }
+    ul {
+      margin: 8px 0px;
+    }
+   </style>
+</head>
+<body>
+  <div id = "app">
+    <v-app>
+      <nav>
+        <v-app-bar color="light-blue darken-4" dark dense app>
+          <v-app-bar-nav-icon class="d-md-none" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+          <v-toolbar-title>{{ logo }}</v-toolbar-title>
+          <v-spacer> </v-spacer>
+            <div class="hidden-sm-and-down">
+              <v-btn text v-for="item in menu" 
+                :href="item.href">
+                {{item.title}}
+              </v-btn>
+            </div>
+            <v-spacer> </v-spacer>
+            
+            <v-menu offset-y open-on-hover>
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" color="primary" small style="text-transform:none">
+                  <v-text>Русский</v-text>
+                  <v-icon right>mdi-menu-down</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                
+                    
+                
+                    
+                <v-list-item href=/docs/index.html>
+                  <v-list-item-title>English</v-list-item-title>
+                </v-list-item>
+                   
+                
+              </v-list>
+            </v-menu>
+            
+            <v-btn icon class="d-lg-none" @click.stop="rightpanel = !rightpanel">
+              <v-icon>mdi-text</v-icon>
+          </v-btn>
+          <v-menu offset-y>
+              <template v-slot:activator="{ on }">
+                <v-btn icon class="d-md-none"
+                v-on="on" >
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item  v-for="item in menu" 
+                  :href="item.href">
+                  <v-list-item-title>{{item.title}}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+          </v-menu>
+        </v-app-bar>
+        <v-navigation-drawer class = "d-md-none" v-model="drawer"
+        absolute temporary style="position:fixed; overflow-y:auto;"
+        >
+        <v-container>
+            <left-nav>
+              </left-nav>
+          </v-container>
+        </v-navigation-drawer>
+        <v-navigation-drawer class = "d-lg-none" right v-model="rightpanel"
+        absolute temporary style="position:fixed; overflow-y:auto;"
+        >
+         <v-container>
+            <div class="label"><v-icon>mdi-text</v-icon> On this page</div>
+            <v-list-item-group color="indigo" v-model="curh">
+            <v-list-item dense
+                v-for="item in rightList"
+                :href = "item.href"
+                @click="rightpanel = false"
+                :class="item.sub ? 'pl-8' : ''"
+            >
+                {{item.title}}
+              </v-list-item>
+          </v-list-item-group>
+        </v-container>
+        </v-navigation-drawer>
+      </nav>
+
+<v-container fluid center>
+  <v-layout center>
+    <div style="margin-top: 2rem;display: flex;flex-direction: row;justify-content:center;width: 100%;">
+      <div class="d-none d-md-block">
+        <div style="position: sticky;top: 3rem; padding-top: 2rem; 
+               align-self: stretch;overflow: auto;">
+          <left-nav/>
+        </div>
+      </div>
+      <div id="article" style="flex-grow:1;padding: 2rem;min-width: 500px;max-width:1024px;top: 3rem;">
+          <article>
+          <h1 id="--genteeweb">Что такое GenteeWeb</h1>
+
+          </article>
+      </div>
+      <div class="d-none d-lg-block">
+        <div style="position: sticky;top: 3rem; padding-top: 2rem;align-self: stretch;overflow: auto;">
+          <right-nav/>
+        </div>
+      </div>
+    </div>
+  </v-layout>
+</v-container>              
+<v-btn
+v-scroll="onScroll"
+v-show="fab"
+fab dark fixed bottom right color="primary"
+@click="toTop"
+>
+<v-icon>mdi-chevron-up</v-icon>
+</v-btn>    
+<v-footer app absolute class="py-3 d-flex flex-column justify-center blue-grey">
+    <v-text class="white--text">Copyright © GenteeWeb community, 2019 All rights reserved.</v-text> 
+</v-footer>
+</v-app>
+</div>
+<script type="text/x-template" id="leftnav">
+<v-list dense>
+    
+        
+            <v-list-item><v-list-item-title>Name 1</v-list-item-title></v-list-item>
+        
+    
+        
+            <v-list-item><v-list-item-title>Name 2</v-list-item-title></v-list-item>
+        
+    
+        
+        <v-list-group >
+            <template v-slot:activator>
+              <v-list-item-title>Group 1</v-list-item-title>
+            </template>
+            
+                
+                <v-list-item class="pl-8"><v-list-item-title>Name 3</v-list-item-title></v-list-item>
+              
+           
+                
+                <v-list-item class="pl-8"><v-list-item-title>Name 4</v-list-item-title></v-list-item>
+              
+           
+        </v-list-group>
+        
+    
+        
+            <v-list-item><v-list-item-title>Name 5</v-list-item-title></v-list-item>
+        
+    
+        
+        <v-list-group >
+            <template v-slot:activator>
+              <v-list-item-title>Group 2</v-list-item-title>
+            </template>
+            
+                
+                <v-list-item class="pl-8"><v-list-item-title>Name 6</v-list-item-title></v-list-item>
+              
+           
+                
+                <v-list-item class="pl-8"><v-list-item-title>Name 7</v-list-item-title></v-list-item>
+              
+           
+                
+                <v-list-group  no-action sub-group >
+                    <template v-slot:activator>
+                      <v-list-item-content>
+                        <v-list-item-title>Subgroup</v-list-item-title>
+                      </v-list-item-content>
+                    </template>
+                    
+                <v-list-item link >
+                  <v-list-item-title>Subitem 1</v-list-item-title>
+                </v-list-item>
+                    
+                <v-list-item link >
+                  <v-list-item-title>Subitem 2</v-list-item-title>
+                </v-list-item>
+                    
+              </v-list-group>
+              
+           
+                
+                <v-list-item class="pl-8"><v-list-item-title>Name 8</v-list-item-title></v-list-item>
+              
+           
+        </v-list-group>
+        
+    
+</v-list>
+</script>
+
+<script>
+var rightList = [];
+
+function walkHeaders(root) {
+    if( root != null && root.nodeType === 1 && root.nodeName !== 'script' ) {
+        var name = root.nodeName.toLowerCase();
+        if( name == 'h2' || name == 'h3' ) {
+            root.setAttribute("style", "padding-top: 4rem; margin-top: -4rem;");
+            rightList.push( {
+                title: root.innerHTML,
+                href: '#' + root.id,
+                active: rightList.length == 0,
+                sub: name == 'h3',
+            });
+        } else {
+            for( var i = 0; i < root.childNodes.length; i++ ) {
+                walkHeaders( root.childNodes[i] );
+            }
+        }
+    }
+}
+
+function getRightList() {
+   walkHeaders( document.getElementById('article') );
+};
+
+const menu = [
+    {
+        title: "Documentation",
+        href: "/docs",
+        },{
+        title: "GitHub",
+        href: "https://github.com/gentee/genteeweb",
+        },{
+        title: "Demo root",
+        href: "/",
+        },
+];
+
+function pageData() { 
+    getRightList();
+    return {
+        fab: false, 
+        drawer: null,
+        rightpanel: null,
+        logo: "GenteeWeb",
+        menu: menu,
+        rightList: rightList,
+        curh: false,
+
+        }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.js"></script>
+
+<script>
+const rightNav = `<div style="position:sticky">
+    <a href="/" class="black--text mb-5" target="_blank" style="display: block;text-decoration: none;"><v-icon class="mr-2">mdi-github-circle</v-icon>Edit on GitHub</a>
+    <div class="label"><v-icon class="mr-2">mdi-text</v-icon>On this page</div>
+    <div id="rightlist">
+    <a v-for="item in rightList" :href = "item.href" :class="{tactive: item.active, 
+         'grey--text darken-4--text': !item.active, 'pl-8': item.sub}"
+            class="thispage">
+          {{item.title}}
+    </a>
+    </div>
+</div>`;
+
+Vue.component('left-nav', { 
+    template: '#leftnav',
+    data: () => ({
+      admins: [
+        ['Management', 'people_outline'],
+        ['Settings', 'settings'],
+      ],
+      cruds: [
+        ['Create', 'add'],
+        ['Read', 'insert_drive_file'],
+        ['Update', 'update'],
+        ['Delete', 'delete'],
+      ],
+    }),
+})
+
+Vue.component('right-nav', { 
+    template: rightNav,
+})
+
+new Vue({
+    vuetify: new Vuetify(),
+    el: '#app',
+    data: pageData(),
+    methods: {
+    onScroll (e) {
+        if (typeof window === 'undefined') return
+        const top = window.pageYOffset ||   e.target.scrollTop || 0
+        this.fab = top > 20
+
+        var rl = document.getElementById('rightlist');
+        var iactive = -1;
+        for( var i = 0; i < rl.childNodes.length; i++ ) {
+            var currLink = rl.childNodes[i];
+            var refElement = document.getElementById(rightList[i].href.substr(1));
+            if (refElement.offsetTop <= top || refElement.offsetTop - 50 <= top){
+                iactive = i;
+            }
+            rightList[i].active = false;
+        }
+        if (iactive >=0) {
+            rightList[iactive].active = true;
+            this.curh = iactive;
+        } else {
+            this.curh = false;
+        }
+     },
+    toTop () {
+        this.$vuetify.goTo(0)
+        }
+    }
+})
+
+
+</script>
+</body>
+</html>

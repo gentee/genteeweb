@@ -23,13 +23,13 @@ var (
 
 func StartLive() {
 	var (
-		err    error
-		isPage bool
-		page   *Page
-		timer  *time.Timer
-		event  fsnotify.Event
-		ok     bool
+		err   error
+		page  *Page
+		timer *time.Timer
+		event fsnotify.Event
+		ok    bool
 	)
+	iPath := -1
 	eventFunc := func() {
 		if strings.HasPrefix(event.Name, cfg.Templates) &&
 			event.Op&(fsnotify.Write|fsnotify.Create) != 0 {
@@ -42,34 +42,40 @@ func StartLive() {
 			return
 		}
 		fmt.Println("event:", event, len(watcher.Events))
-		if event.Op&fsnotify.Write == fsnotify.Write {
-			if strings.HasPrefix(event.Name, cfg.Content) {
-				if filepath.Base(event.Name) == ContentFile {
+		for i, path := range cfg.paths {
+			if strings.HasPrefix(event.Name, path) {
+				if event.Op&fsnotify.Write == fsnotify.Write {
+					if filepath.Base(event.Name) == ContentFile {
 
-				} else {
-					isPage = true
+					} else {
+						iPath = i
+					}
 				}
-			}
-		}
-		if event.Op&fsnotify.Create == fsnotify.Create {
-			if strings.HasPrefix(event.Name, cfg.Content) {
-				/*					if filepath.Base(event.Name) == ContentFile {
+				if event.Op&fsnotify.Create == fsnotify.Create {
+					/*					if filepath.Base(event.Name) == ContentFile {
 
-									} else {
-										isPage = true
-									}*/
+										} else {
+											isPage = true
+										}*/
+				}
+				break
 			}
 		}
-		if isPage {
+		if iPath >= 0 {
 			mutexPage.Lock()
-			page = pages[FileToURL(event.Name)]
+			url := filepath.ToSlash(event.Name[len(cfg.paths[iPath]):])
+			if url[0] != '/' {
+				url = `/` + url
+			}
+			url = strings.ToLower(url[:len(url)-len(filepath.Ext(url))] + `.html`)
+			page = pages[url]
 			if page != nil {
 				if err := UpdateContent(page); err != nil {
 					golog.Error(err)
 				}
 			}
 			mutexPage.Unlock()
-			isPage = false
+			iPath = -1
 		}
 	}
 	for {

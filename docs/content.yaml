@@ -3,4 +3,4 @@ logo:
    name: GenteeWeb
 
 langs: [en,ru]
-deflang: en
+defdir: en

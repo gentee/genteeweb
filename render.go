@@ -27,6 +27,7 @@ type Render struct {
 	Params  map[string]string
 	Menu    []*MenuItem
 	Nav     []*NavItem
+	Langs   []*MenuItem
 }
 
 var (
@@ -111,6 +112,7 @@ func RenderPage(url string) (string, error) {
 	render.Params = page.parent.Params
 	render.Menu = page.parent.Menu
 	render.Nav = page.parent.Nav
+	render.Langs = LangList(page)
 	if err = templates.templates.ExecuteTemplate(buf, tpl+`.html`, render); err != nil {
 		return ``, err
 	}

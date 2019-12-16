@@ -33,7 +33,8 @@ type Config struct {
 	Lang      string `yaml:"lang"`      // default language. By default, en
 	AutoDel   bool   `yaml:"autodel"`   // delete all static .html files at the start, except assets.
 	// By default, false
-	mode int
+	mode  int
+	paths []string
 }
 
 var (
@@ -95,5 +96,6 @@ func LoadSettings() {
 	}[cfg.Mode]; !ok {
 		golog.Fatalf(`Unknown mode %s`, cfg.Mode)
 	}
+	cfg.paths = []string{cfg.Content}
 	fmt.Println(`CFG`, cfg)
 }
