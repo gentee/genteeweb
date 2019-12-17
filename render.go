@@ -21,13 +21,18 @@ import (
 )
 
 type Render struct {
-	Content template.HTML
-	Title   string
-	Logo    *Logo
-	Params  map[string]string
-	Menu    []*MenuItem
-	Nav     []*NavItem
-	Langs   []*MenuItem
+	Content  template.HTML
+	Title    string
+	Logo     *Logo
+	Params   map[string]string
+	Menu     []*MenuItem
+	Nav      []*NavItem
+	Langs    []*MenuItem
+	Url      string
+	Index    bool
+	Domain   string
+	Original string
+	GitHub   string
 }
 
 var (
@@ -113,6 +118,11 @@ func RenderPage(url string) (string, error) {
 	render.Menu = page.parent.Menu
 	render.Nav = page.parent.Nav
 	render.Langs = LangList(page)
+	render.Index = path.Base(page.url) == `index.html`
+	render.Url = page.url
+	render.Domain = cfg.Domain
+	render.GitHub = page.parent.GitHub
+	render.Original = path.Join(path.Dir(page.url), path.Base(page.file))
 	if err = templates.templates.ExecuteTemplate(buf, tpl+`.html`, render); err != nil {
 		return ``, err
 	}

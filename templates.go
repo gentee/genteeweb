@@ -6,6 +6,7 @@ package main
 
 import (
 	"html/template"
+	"path"
 	"path/filepath"
 )
 
@@ -17,14 +18,14 @@ var (
 	templates *Template
 )
 
-func toJS(s string) template.JS {
-	return template.JS(s)
+func dir(s string) string {
+	return path.Dir(s)
 }
 
 func LoadTemplates() {
 	templates = &Template{
 		templates: template.Must(template.New(``).Delims(`[[`, `]]`).Funcs(
-			template.FuncMap{"toJS": toJS},
+			template.FuncMap{"dir": dir},
 		).
 			ParseGlob(
 				filepath.Join(cfg.Templates, "*.html"))),

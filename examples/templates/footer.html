@@ -28,23 +28,38 @@ fab dark fixed bottom right color="primary"
                       </v-list-item-content>
                     </template>
                     [[ range $subgroup := $group.Children ]]
-                <v-list-item link >
+                <v-list-item href="[[ $subgroup.Href ]]">
                   <v-list-item-title>[[$subgroup.Title]]</v-list-item-title>
                 </v-list-item>
                     [[end]]
               </v-list-group>
               [[else]]
-                <v-list-item class="pl-8"><v-list-item-title>[[ $group.Title ]]</v-list-item-title></v-list-item>
+                <v-list-item class="pl-8" href="[[ $group.Href ]]"><v-list-item-title>[[ $group.Title ]]</v-list-item-title></v-list-item>
               [[end]]
            [[end]]
         </v-list-group>
         [[else]]
-            <v-list-item><v-list-item-title>[[ $item.Title ]]</v-list-item-title></v-list-item>
+            <v-list-item [[if eq $item.Href $.Url]]class="blue lighten-4"[[else]]href="[[ $item.Href ]]"[[end]]>
+                <v-list-item-title>[[ $item.Title ]]</v-list-item-title></v-list-item>
         [[end]]
     [[ end ]]
 </v-list>
 </script>
-
+<script type="text/x-template" id="rightnav">
+<div style="position:sticky">
+[[if .GitHub]]    
+<a href="[[.GitHub]]/blob/master[[.Original]]" class="black--text mb-5" target="_blank" style="display: block;text-decoration: none;"><v-icon class="mr-2">mdi-github-circle</v-icon>Edit on GitHub</a>
+[[end]]
+    <div class="label"><v-icon class="mr-2">mdi-text</v-icon>On this page</div>
+    <div id="rightlist">
+    <a v-for="item in rightList" :href = "item.href" :class="{tactive: item.active, 
+            'grey--text darken-4--text': !item.active, 'pl-8': item.sub}"
+            class="thispage">
+            {{item.title}}
+    </a>
+    </div>
+</div>
+</script>
 <script>
 var rightList = [];
 
@@ -96,36 +111,12 @@ function pageData() {
 <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.js"></script>
 
 <script>
-const rightNav = `<div style="position:sticky">
-    <a href="/" class="black--text mb-5" target="_blank" style="display: block;text-decoration: none;"><v-icon class="mr-2">mdi-github-circle</v-icon>Edit on GitHub</a>
-    <div class="label"><v-icon class="mr-2">mdi-text</v-icon>On this page</div>
-    <div id="rightlist">
-    <a v-for="item in rightList" :href = "item.href" :class="{tactive: item.active, 
-         'grey--text darken-4--text': !item.active, 'pl-8': item.sub}"
-            class="thispage">
-          {{item.title}}
-    </a>
-    </div>
-</div>`;
-
 Vue.component('left-nav', { 
     template: '#leftnav',
-    data: () => ({
-      admins: [
-        ['Management', 'people_outline'],
-        ['Settings', 'settings'],
-      ],
-      cruds: [
-        ['Create', 'add'],
-        ['Read', 'insert_drive_file'],
-        ['Update', 'update'],
-        ['Delete', 'delete'],
-      ],
-    }),
 })
 
 Vue.component('right-nav', { 
-    template: rightNav,
+    template: '#rightnav',
 })
 
 new Vue({

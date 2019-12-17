@@ -3,9 +3,9 @@
 <head> 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>What is GenteeWeb</title>
+  <title>Hello, world</title>
   
-      <link rel="canonical" href="https://www.gentee.net/docs"/>
+      <link rel="canonical" href="https://www.gentee.net/"/>
   
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
@@ -64,26 +64,6 @@
             </div>
             <v-spacer> </v-spacer>
             
-            <v-menu offset-y open-on-hover>
-              <template v-slot:activator="{ on }">
-                <v-btn v-on="on" color="primary" small style="text-transform:none">
-                  <v-text>English</v-text>
-                  <v-icon right>mdi-menu-down</v-icon>
-                </v-btn>
-              </template>
-              <v-list>
-                
-                    
-                
-                    
-                <v-list-item href=/docs/ru/index.html>
-                  <v-list-item-title>Русский</v-list-item-title>
-                </v-list-item>
-                   
-                
-              </v-list>
-            </v-menu>
-            
             <v-btn icon class="d-lg-none" @click.stop="rightpanel = !rightpanel">
               <v-icon>mdi-text</v-icon>
           </v-btn>
@@ -140,7 +120,46 @@
       </div>
       <div id="article" style="flex-grow:1;padding: 2rem;min-width: 500px;max-width:1024px;top: 3rem;">
           <article>
-          <h1 id="what-is-genteeweb">What is GenteeWeb</h1>
+          <h1 id="hello-world">Hello, world</h1>
+<p>This is a paragraph.<br>
+The next line.</p>
+<p><a href="#highlightingsyntax">My</a></p>
+<h2 id="header-2-level">Header 2 level</h2>
+<ul>
+<li>Item 177</li>
+<li>Item 27</li>
+<li>Additional item</li>
+<li><a href="https://github.com/gentee/genteeweb">GitHub</a></li>
+</ul>
+<p>simple code example</p>
+<pre><code>func a() int {
+    return 10 + 23
+}
+</code></pre>
+<h3 id="highlightingsyntax">Highlighting-syntax</h3>
+<pre style="color:#f8f8f2;background-color:#272822"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1</span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">b</span>() <span style="color:#66d9ef">int</span> {
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2</span>    <span style="color:#75715e">// comment
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">str</span> <span style="color:#a6e22e">s</span> = <span style="color:#e6db74">&#34;My string&#34;</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4</span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">23</span>
+<span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5</span>}
+</pre><h3 id="subheader-3">Subheader 3</h3>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<h3 id="subheader-4">Subheader 4</h3>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<h2 id="next-header">Next Header</h2>
+<ul>
+<li>Item 177</li>
+<li>Item 27</li>
+<li>Additional item</li>
+</ul>
+<h3 id="subheader-5">Subheader 5</h3>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<h3 id="subheader-6">Subheader 6</h3>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<h3 id="subheader-7">Subheader 7</h3>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+<h3 id="subheader-8">Subheader 8</h3>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
           </article>
       </div>
@@ -169,21 +188,81 @@ fab dark fixed bottom right color="primary"
 <v-list dense>
     
         
-            <v-list-item class="blue lighten-4">
-                <v-list-item-title>What is GenteeWeb</v-list-item-title></v-list-item>
+            <v-list-item href="/">
+                <v-list-item-title>Name 1</v-list-item-title></v-list-item>
         
     
         
-            <v-list-item href="/docs/config.html">
-                <v-list-item-title>Configuration</v-list-item-title></v-list-item>
+            <v-list-item href="/">
+                <v-list-item-title>Name 2</v-list-item-title></v-list-item>
+        
+    
+        
+        <v-list-group >
+            <template v-slot:activator>
+              <v-list-item-title>Group 1</v-list-item-title>
+            </template>
+            
+                
+                <v-list-item class="pl-8" href="/"><v-list-item-title>Name 3</v-list-item-title></v-list-item>
+              
+           
+                
+                <v-list-item class="pl-8" href="/"><v-list-item-title>Name 4</v-list-item-title></v-list-item>
+              
+           
+        </v-list-group>
+        
+    
+        
+            <v-list-item href="/">
+                <v-list-item-title>Name 5</v-list-item-title></v-list-item>
+        
+    
+        
+        <v-list-group >
+            <template v-slot:activator>
+              <v-list-item-title>Group 2</v-list-item-title>
+            </template>
+            
+                
+                <v-list-item class="pl-8" href="/"><v-list-item-title>Name 6</v-list-item-title></v-list-item>
+              
+           
+                
+                <v-list-item class="pl-8" href="/"><v-list-item-title>Name 7</v-list-item-title></v-list-item>
+              
+           
+                
+                <v-list-group  no-action sub-group >
+                    <template v-slot:activator>
+                      <v-list-item-content>
+                        <v-list-item-title>Subgroup</v-list-item-title>
+                      </v-list-item-content>
+                    </template>
+                    
+                <v-list-item href="/">
+                  <v-list-item-title>Subitem 1</v-list-item-title>
+                </v-list-item>
+                    
+                <v-list-item href="/">
+                  <v-list-item-title>Subitem 2</v-list-item-title>
+                </v-list-item>
+                    
+              </v-list-group>
+              
+           
+                
+                <v-list-item class="pl-8" href="/"><v-list-item-title>Name 8</v-list-item-title></v-list-item>
+              
+           
+        </v-list-group>
         
     
 </v-list>
 </script>
 <script type="text/x-template" id="rightnav">
 <div style="position:sticky">
-    
-<a href="https://github.com/gentee/genteeweb/blob/master/docs/README.md" class="black--text mb-5" target="_blank" style="display: block;text-decoration: none;"><v-icon class="mr-2">mdi-github-circle</v-icon>Edit on GitHub</a>
 
     <div class="label"><v-icon class="mr-2">mdi-text</v-icon>On this page</div>
     <div id="rightlist">
@@ -240,7 +319,7 @@ function pageData() {
         fab: false, 
         drawer: null,
         rightpanel: null,
-        logo: "GenteeWeb",
+        logo: "Demo site",
         menu: menu,
         rightList: rightList,
         curh: false,

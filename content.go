@@ -10,6 +10,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -58,6 +59,7 @@ type Content struct {
 	Nav      []*NavItem        `yaml:"nav"`
 	Langs    []string          `yaml:"langs"`
 	DefDir   string            `yaml:"defdir"`
+	GitHub   string            `yaml:"github"`
 
 	dir      string
 	url      string
@@ -68,8 +70,9 @@ type Content struct {
 }
 
 var (
-	pages    = map[string]*Page{}
-	contents = &Content{}
+	pages      = map[string]*Page{}
+	contents   = &Content{}
+	reTitle, _ = regexp.Compile(`\s*#\s*(.*)`)
 )
 
 func RemoveCache() {
@@ -133,6 +136,12 @@ func ReadContent(name string, owner *Content) *Page {
 			if err = yaml.Unmarshal([]byte(head), &page); err != nil {
 				golog.Fatal(err)
 			}
+		}
+	}
+	if len(page.Title) == 0 {
+		list := reTitle.FindStringSubmatch(body)
+		if len(list) > 1 {
+			page.Title = list[1]
 		}
 	}
 	page.url = FileToURL(page)
@@ -210,13 +219,21 @@ func readDir(dpath string, owner *Content) {
 				child.Menu = parent.Menu
 			}
 			if child.Nav == nil {
-				child.Nav = parent.Nav
+				if len(lang) == 0 {
+					child.Nav = parent.Nav
+				} else {
+					child.Nav = copyNav(parent.Nav)
+					navMenu(child)
+				}
 			}
 			if child.Langs == nil {
 				child.Langs = parent.Langs
 			}
 			if len(child.DefDir) == 0 {
 				child.DefDir = parent.DefDir
+			}
+			if len(child.GitHub) == 0 {
+				child.GitHub = parent.GitHub
 			}
 			if len(child.Template) == 0 {
 				child.Template = parent.Template
@@ -225,6 +242,7 @@ func readDir(dpath string, owner *Content) {
 		}
 		owner.children = append(owner.children, child)
 	}
+	navMenu(owner)
 }
 
 func LoadContent() {
@@ -248,4 +266,46 @@ func UpdateContent(page *Page) error {
 	}
 	os.Remove(filepath.Join(cfg.WebDir, filepath.FromSlash(page.url)))
 	return nil
+}
+
+func walkNav(owner *Content, list []*NavItem) {
+	for i, item := range list {
+		if len(item.Children) > 0 {
+			walkNav(owner, item.Children)
+		}
+		if len(item.Href) == 0 || strings.HasPrefix(item.Href, `/`) ||
+			strings.IndexByte(item.Href, ':') > 0 {
+			continue
+		}
+		if page, ok := pages[path.Join(owner.url, item.Href)+`.html`]; ok {
+			list[i].Href = page.url
+			if len(item.Title) == 0 {
+				if len(page.TitleMenu) > 0 {
+					list[i].Title = template.JS(page.TitleMenu)
+				} else {
+					list[i].Title = template.JS(page.Title)
+				}
+			}
+		}
+	}
+}
+
+func navMenu(owner *Content) {
+	if len(owner.DefDir) == 0 {
+		walkNav(owner, owner.Nav)
+	}
+}
+
+func copyNav(nav []*NavItem) (ret []*NavItem) {
+	for _, item := range nav {
+		retNav := NavItem{
+			Title: item.Title,
+			Href:  item.Href,
+		}
+		if len(item.Children) > 0 {
+			retNav.Children = copyNav(item.Children)
+		}
+		ret = append(ret, &retNav)
+	}
+	return
 }

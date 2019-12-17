@@ -2,5 +2,10 @@
 logo: 
    name: GenteeWeb
 
+github: https://github.com/gentee/genteeweb
 langs: [en,ru]
 defdir: en
+
+nav: 
+   - href: index
+   - href: config

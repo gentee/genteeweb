@@ -1,6 +1,6 @@
 root: 
 
 mode: live
-domain: gentee.net
+domain: https://www.gentee.net
 port: 3000
 autodel: true
