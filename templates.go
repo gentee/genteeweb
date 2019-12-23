@@ -23,8 +23,16 @@ func dir(s string) string {
 }
 
 func LoadTemplates() {
+	tmpl := template.New(``)
+	delims := len(cfg.Delim)
+	if delims != 0 {
+		if delims > 2 {
+			tmpl = tmpl.Delims(cfg.Delim[:2], cfg.Delim[2:])
+		}
+	}
+
 	templates = &Template{
-		templates: template.Must(template.New(``).Delims(`[[`, `]]`).Funcs(
+		templates: template.Must(tmpl.Funcs(
 			template.FuncMap{"dir": dir},
 		).
 			ParseGlob(

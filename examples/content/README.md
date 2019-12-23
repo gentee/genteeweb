@@ -1,15 +1,15 @@
 
-# Hello, world
+# Hello, world!
 
 This is a paragraph.  
-The next line.
+This is the next line.
 
 [My](#highlightingsyntax)
 
 ## Header 2 level
 
-* Item 177
-* Item 27
+* Item 1777
+* Item 2777
 * Additional item
 * [GitHub](https://github.com/gentee/genteeweb)
 

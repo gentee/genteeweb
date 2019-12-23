@@ -5,7 +5,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -29,10 +28,10 @@ type Config struct {
 	Templates string `yaml:"templates"` // templates directory. templates if it is empty
 	LogDir    string `yaml:"logdir"`    // directory for log files, log if it is empty
 	WebDir    string `yaml:"webdir"`    // directory for static web files, www if it is empty
-	Mode      string `yaml:"mode"`      // mode: static, cache, live. Default, live
-	Lang      string `yaml:"lang"`      // default language. By default, en
+	Mode      string `yaml:"mode"`      // mode: static, cache, live, dynamic. Default, live
 	AutoDel   bool   `yaml:"autodel"`   // delete all static .html files at the start, except assets.
 	// By default, false
+	Delim string `yaml:"delim"` // Delimiters for patterns. By default, {{}}
 	mode  int
 	paths []string
 }
@@ -85,9 +84,6 @@ func LoadSettings() {
 	if len(cfg.WebDir) == 0 {
 		cfg.WebDir = filepath.Join(cfg.Root, `www`)
 	}
-	if len(cfg.Lang) == 0 {
-		cfg.Lang = DefaultLang
-	}
 	if cfg.mode, ok = map[string]int{
 		`live`:    ModeLive,
 		`cache`:   ModeCache,
@@ -97,5 +93,4 @@ func LoadSettings() {
 		golog.Fatalf(`Unknown mode %s`, cfg.Mode)
 	}
 	cfg.paths = []string{cfg.Content}
-	fmt.Println(`CFG`, cfg)
 }

@@ -4,3 +4,4 @@ mode: live
 domain: https://www.gentee.net
 port: 3000
 autodel: true
+delim: "[[]]"

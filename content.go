@@ -71,8 +71,10 @@ type Content struct {
 
 var (
 	pages      = map[string]*Page{}
+	redirs     = map[string]string{}
 	contents   = &Content{}
 	reTitle, _ = regexp.Compile(`\s*#\s*(.*)`)
+	redir      string
 )
 
 func RemoveCache() {
@@ -147,6 +149,10 @@ func ReadContent(name string, owner *Content) *Page {
 	page.url = FileToURL(page)
 	page.body = body
 	pages[page.url] = page
+	if len(redir) > 0 {
+		redirUrl := strings.Replace(page.url, path.Dir(redir), redir, 1)
+		redirs[redirUrl] = page.url
+	}
 	return page
 }
 
@@ -176,6 +182,7 @@ func readDir(dpath string, owner *Content) {
 		page.url = index
 		delete(pages, readme)
 		pages[index] = page
+		redirs[readme] = index
 	}
 	for _, item := range owner.Paths {
 		dir, err := filepath.Abs(item.Dir)
@@ -190,10 +197,10 @@ func readDir(dpath string, owner *Content) {
 			url, lang string
 		)
 		base := strings.ToLower(filepath.Base(dir))
+		url = path.Join(owner.url, base)
 		if base == owner.DefDir {
+			redir = url
 			url = owner.url
-		} else {
-			url = path.Join(owner.url, base)
 		}
 		for _, ilang := range owner.Langs {
 			if ilang == base {
@@ -207,6 +214,7 @@ func readDir(dpath string, owner *Content) {
 			lang:   lang,
 		}
 		readDir(dir, child)
+		redir = ``
 		parent := child.parent
 		for parent != nil {
 			if child.Logo == nil {
@@ -253,10 +261,12 @@ func LoadContent() {
 }
 
 func UpdateContent(page *Page) error {
+	curUrl := page.url
 	page = ReadContent(page.file, page.parent)
 	if page == nil {
 		return ErrContent
 	}
+	page.url = curUrl
 	pages[page.url] = page
 	for i, cur := range page.parent.pages {
 		if cur.url == page.url {
