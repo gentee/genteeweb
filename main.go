@@ -30,7 +30,7 @@ func createDir(content *Content, path string, static bool) {
 			if err != nil {
 				golog.Fatal(err)
 			}
-			if err = ioutil.WriteFile(filepath.Join(dir, filepath.Base(page.url)),
+			if err = ioutil.WriteFile(filepath.Join(cfg.WebDir, filepath.FromSlash(page.url)),
 				[]byte(data), os.ModePerm); err != nil {
 				golog.Fatal(err)
 			}

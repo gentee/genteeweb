@@ -8,4 +8,8 @@ defdir: en
 
 nav: 
    - href: index
+   - href: install
    - href: config
+   - href: content
+   - href: page
+   - href: patterns

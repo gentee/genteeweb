@@ -7,7 +7,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -64,19 +63,7 @@ func StartLive() {
 		}
 		if iPath >= 0 {
 			mutexPage.Lock()
-			url := filepath.ToSlash(event.Name[len(cfg.paths[iPath]):])
-			if iPath > 0 {
-				url = path.Join(filepath.Base(cfg.paths[iPath]), url)
-			}
-			if url[0] != '/' {
-				url = `/` + url
-			}
-			url = strings.ToLower(url[:len(url)-len(filepath.Ext(url))] + `.html`)
-			page = pages[url]
-			for page == nil && len(redirs[url]) > 0 {
-				url = redirs[url]
-				page = pages[url]
-			}
+			page = files[event.Name]
 			if page != nil {
 				if err := UpdateContent(page); err != nil {
 					golog.Error(err)

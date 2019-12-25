@@ -33,7 +33,7 @@ type Config struct {
 	// By default, false
 	Delim string `yaml:"delim"` // Delimiters for patterns. By default, {{}}
 	mode  int
-	paths []string
+	paths []string //*PathItem
 }
 
 var (

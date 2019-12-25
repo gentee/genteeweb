@@ -7,10 +7,11 @@ params:
 
 paths: 
   - dir: ../docs
+    alias: gentee-web
 
 menu: 
   - title: Documentation
-    href: /docs  
+    href: /gentee-web  
   - title: GitHub
     href: https://github.com/gentee/genteeweb
   - title: Demo root

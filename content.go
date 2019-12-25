@@ -36,7 +36,8 @@ type Logo struct {
 }
 
 type PathItem struct {
-	Dir string `yaml:"dir"`
+	Dir   string `yaml:"dir"`
+	Alias string `yaml:"alias"`
 }
 
 type MenuItem struct {
@@ -70,11 +71,11 @@ type Content struct {
 }
 
 var (
-	pages      = map[string]*Page{}
-	redirs     = map[string]string{}
+	pages = map[string]*Page{}
+	files = map[string]*Page{}
+
 	contents   = &Content{}
 	reTitle, _ = regexp.Compile(`\s*#\s*(.*)`)
-	redir      string
 )
 
 func RemoveCache() {
@@ -149,10 +150,7 @@ func ReadContent(name string, owner *Content) *Page {
 	page.url = FileToURL(page)
 	page.body = body
 	pages[page.url] = page
-	if len(redir) > 0 {
-		redirUrl := strings.Replace(page.url, path.Dir(redir), redir, 1)
-		redirs[redirUrl] = page.url
-	}
+	files[page.file] = page
 	return page
 }
 
@@ -182,8 +180,8 @@ func readDir(dpath string, owner *Content) {
 		page.url = index
 		delete(pages, readme)
 		pages[index] = page
-		redirs[readme] = index
 	}
+	aliases := make(map[string]string)
 	for _, item := range owner.Paths {
 		dir, err := filepath.Abs(item.Dir)
 		if err != nil {
@@ -191,15 +189,18 @@ func readDir(dpath string, owner *Content) {
 		}
 		dirs = append(dirs, dir)
 		cfg.paths = append(cfg.paths, dir)
+		aliases[dir] = item.Alias
 	}
 	for _, dir := range dirs {
 		var (
-			url, lang string
+			url, lang, base string
 		)
-		base := strings.ToLower(filepath.Base(dir))
+		base = strings.ToLower(filepath.Base(dir))
+		if alias, ok := aliases[dir]; ok {
+			base = alias
+		}
 		url = path.Join(owner.url, base)
 		if base == owner.DefDir {
-			redir = url
 			url = owner.url
 		}
 		for _, ilang := range owner.Langs {
@@ -214,7 +215,6 @@ func readDir(dpath string, owner *Content) {
 			lang:   lang,
 		}
 		readDir(dir, child)
-		redir = ``
 		parent := child.parent
 		for parent != nil {
 			if child.Logo == nil {
@@ -268,6 +268,7 @@ func UpdateContent(page *Page) error {
 	}
 	page.url = curUrl
 	pages[page.url] = page
+	files[page.file] = page
 	for i, cur := range page.parent.pages {
 		if cur.url == page.url {
 			page.parent.pages[i] = page

@@ -7,6 +7,7 @@ package main
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"html/template"
 	"io/ioutil"
 	"os"
@@ -17,6 +18,7 @@ import (
 	"github.com/alecthomas/chroma/formatters/html"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting"
+	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/parser"
 )
 
@@ -39,6 +41,18 @@ var (
 	ErrNotFound = errors.New(`Not found`)
 	ErrContent  = errors.New(`Invalid content`)
 )
+
+type myIDs struct {
+	Counter int
+}
+
+func (s *myIDs) Generate(value []byte, kind ast.NodeKind) []byte {
+	s.Counter++
+	return []byte(fmt.Sprintf("id%d", s.Counter))
+}
+
+func (s *myIDs) Put(value []byte) {
+}
 
 func RenderPage(url string) (string, error) {
 	var (
@@ -93,6 +107,7 @@ func RenderPage(url string) (string, error) {
 		return page.body, err
 	}
 	buf := bytes.NewBuffer([]byte{})
+	ctx := parser.NewContext(parser.WithIDs(&myIDs{}))
 
 	markdown := goldmark.New(
 		goldmark.WithExtensions(
@@ -108,7 +123,7 @@ func RenderPage(url string) (string, error) {
 		),
 	)
 	var markDown bytes.Buffer
-	if err = markdown.Convert([]byte(page.body), &markDown); err != nil {
+	if err = markdown.Convert([]byte(page.body), &markDown, parser.WithContext(ctx)); err != nil {
 		return ``, err
 	}
 	render.Content = template.HTML(markDown.String())
